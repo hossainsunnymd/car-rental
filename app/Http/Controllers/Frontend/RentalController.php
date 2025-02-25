@@ -12,26 +12,40 @@ use Inertia\Inertia;
 class RentalController extends Controller
 {
     public function rentCar(Request $request){
+
         $userId=$request->header('user_id');
         $request->validate([
             'car_id' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
-        $startDate=Carbon::parse($request->input('start_date'));
-        $endDate=Carbon::parse($request->input('end_date'));
-        $days=$startDate->diffInDays($endDate);
-        $dailyRentPrice=Car::where('id','=',$request->car_id)->first()->daily_rent_price;
-        $totalCost=$days*$dailyRentPrice;
+        $startDate=date('Y-m-d',strtotime($request->start_date));
+        $endDate=date('Y-m-d',strtotime($request->end_date));
+        $count=Rental::where('car_id','=',$request->car_id)
+        ->whereBetween('start_date',[$startDate,$endDate])
+        ->orwhereBetween('end_date',[$startDate,$endDate])->orWhere(function($q)use($startDate,$endDate){
+            $q->where('start_date','=<',$startDate)
+            ->Where('end_date','>=',$endDate);
+        })->count();
+        if(!$count){
+            $startDate=Carbon::parse($request->input('start_date'));
+            $endDate=Carbon::parse($request->input('end_date'));
+            $days=$startDate->diffInDays($endDate);
+            $dailyRentPrice=Car::where('id','=',$request->car_id)->first()->daily_rent_price;
+            $totalCost=$days*$dailyRentPrice;
 
-       Rental::Create([
-           'car_id' => $request->car_id,
-           'user_id' => $userId,
-           'total_cost' =>$totalCost,
-           'start_date' => $request->start_date,
-           'end_date' => $request->end_date
-       ]);
-       return response()->json(['message' => 'Car rented successfully'], 200);
+           Rental::Create([
+               'car_id' => $request->car_id,
+               'user_id' => $userId,
+               'total_cost' =>$totalCost,
+               'start_date' => $request->start_date,
+               'end_date' => $request->end_date
+           ]);
+           return response()->json(['message' => 'Car rented successfully'], 200);
+
+        }else{
+            return "Already Booked";
+        }
 
     }
 

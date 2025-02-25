@@ -26,8 +26,7 @@ const rentCar=()=>{
         <div class="md:flex items-center -mx-10">
             <div class="w-full md:w-1/2 px-10 mb-10 md:mb-0">
                 <div class="relative">
-                    <img :src="page.props.carDetails.image" class="w-full relative z-10" :alt="page.props.carDetails.name">
-
+                    <img :src="`/images/${page.props.carDetails.image}`" class="w-full relative z-10" :alt="page.props.carDetails.name">
                 </div>
             </div>
             <div class="w-full md:w-1/2 px-10">
