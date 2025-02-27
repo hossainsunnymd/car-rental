@@ -121,13 +121,11 @@ const page = usePage();
                         } text-white sm:mx-3 sm:mt-0  py-1 px-4 rounded flex items-center`"
                         :href="
                             page.props.flash.login == true
-                                ? page.props.flash.user == 'admin'
+                                && page.props.flash.user == 'admin'
                                     ? '/admin/dashboard'
-                                    : page.props.flash.user == 'customer'
+                                    : page.props.flash.user == 'customer' &&  page.props.flash.login == true
                                     ? '/customer/dashboard'
-                                    : '/sign-up-page'
-                                : '/sign-up-page'
-                        "
+                                    : '/sign-up-page'"
                     >
                         <span
                             v-if="page.props.flash.login == true"
