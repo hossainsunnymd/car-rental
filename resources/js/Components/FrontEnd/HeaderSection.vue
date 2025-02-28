@@ -98,43 +98,43 @@ const page = usePage();
                     >
                     <Link
                         :class="`mt-3 ${
-                            page.props.flash.login == true
+                            page.props.user.login == true
                                 ? 'bg-red-600 hover:bg-red-500'
                                 : 'hover:bg-indigo-600 bg-indigo-500'
                         } text-white  sm:mx-3 sm:mt-0  py-1 px-4 rounded`"
                         :href="
-                            page.props.flash.login == true
+                            page.props.user.login == true
                                 ? '/logout'
                                 : '/sign-in-page'
                         "
                         >{{
-                            page.props.flash.login == true
+                            page.props.user.login == true
                                 ? "Logout"
                                 : "Sign in"
                         }}</Link
                     >
                     <Link
                         :class="`mt-3 ${
-                            page.props.flash.login == true
+                            page.props.user.login == true
                                 ? 'bg-black'
                                 : 'bg-green-600 hover:bg-green-500'
                         } text-white sm:mx-3 sm:mt-0  py-1 px-4 rounded flex items-center`"
                         :href="
-                            page.props.flash.login == true
-                                && page.props.flash.user == 'admin'
+                            page.props.user.login == true
+                                && page.props.user.role == 'admin'
                                     ? '/admin/dashboard'
-                                    : page.props.flash.user == 'customer' &&  page.props.flash.login == true
+                                    : page.props.user.role == 'customer' &&  page.props.user.login == true
                                     ? '/customer/dashboard'
                                     : '/sign-up-page'"
                     >
                         <span
-                            v-if="page.props.flash.login == true"
+                            v-if="page.props.user.login == true"
                             class="material-icons"
                         >
                             dashboard
                         </span>
                         {{
-                            page.props.flash.login == true
+                            page.props.user.login == true
                                 ? "Dashboard"
                                 : "Sign up"
                         }}

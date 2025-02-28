@@ -1,6 +1,9 @@
 <script setup>
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster({  });
 
 const page = usePage();
 
@@ -15,8 +18,14 @@ const customerHeader = [
 const item = ref(page.props.customers);
 function deleteCustomer(id) {
     if (confirm("Are you sure you want to delete this Customer?")) {
-        router.get(`/admin/car-delete?id=${id}`);
+        router.get(`/admin/customer-delete?id=${id}`);
     }
+}
+
+if(page.props.flash.status==true){
+    toaster.success(page.props.flash.message);
+}else if(page.props.flash.status==false){
+    toaster.error(page.props.flash.message);
 }
 </script>
 

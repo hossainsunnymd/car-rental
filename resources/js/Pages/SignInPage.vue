@@ -1,6 +1,8 @@
 <script setup>
 import { Link, router, useForm,usePage } from '@inertiajs/vue3';
+import { createToaster } from "@meforma/vue-toaster";
 
+const toaster = createToaster({ /* options */ });
 const page=usePage();
 
 const form = useForm({
@@ -11,7 +13,8 @@ const form = useForm({
 function submit(){
     form.post('/user-login',{
         onSuccess:()=>{
-           if(page.props.flash.login==true){
+           if(page.props.flash.status==true){
+            toaster.success(page.props.flash.message);
              router.get('/home');
            }
         }

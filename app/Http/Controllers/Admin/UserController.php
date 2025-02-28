@@ -6,6 +6,7 @@ use App\Helper\JWTToken;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -44,12 +45,12 @@ class UserController extends Controller
             $request->session()->put('login',true);
             $request->session()->put('userName',$user->name);
             if($user->role=='admin'){
-                $request->session()->put('user','admin');
-                return redirect('/sign-in-page')->cookie('token', $token, 60 * 24);
+                $request->session()->put('role','admin');
+                return redirect('/sign-in-page')->with(['status'=>true,'message'=>'Login Successfully','error'=>''])->cookie('token', $token, 60 * 24);
 
             }else{
-                $request->session()->put('user','customer');
-                return redirect('/sign-in-page')->cookie('token', $token, 60 * 24);
+                $request->session()->put('role','customer');
+                return redirect('/sign-in-page')->with(['status'=>true,'message'=>'Login Successfully','error'=>''])->cookie('token', $token, 60 * 24);
             }
 
         } else {
@@ -57,10 +58,27 @@ class UserController extends Controller
         }
     }
 
-    public function readProfile(Request $request){
+    public function customerReadProfile(Request $request){
         $userId=$request->header('user_id');
         $userEmail=$request->header('user_email');
         $user = User::where('id', $userId)->where('email', $userEmail)->first();
-        return $user;
+        return Inertia::render('Customer/CustomerProfilePage',['user'=>$user]);
+    }
+
+    public function adminReadProfile(Request $request){
+        $userId=$request->header('user_id');
+        $userEmail=$request->header('user_email');
+        $user = User::where('id', $userId)->where('email', $userEmail)->first();
+        return Inertia::render('Admin/AdminProfilePage',['user'=>$user]);
+    }
+
+    public function updateProfile(Request $request){
+         $request->validate([
+            'name' => 'required',
+            'password' => 'required|min:8',
+         ]);
+
+        $userId=$request->header('user_id');
+        User::where('id', $userId)->update($request->input());
     }
 }

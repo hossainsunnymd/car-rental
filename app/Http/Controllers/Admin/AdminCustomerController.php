@@ -6,6 +6,7 @@ use App\Helper\JWTToken;
 use App\Http\Controllers\Controller;
 use App\Models\Rental;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,6 +16,7 @@ class AdminCustomerController extends Controller
 {
     public function customerSave(Request $request){
 
+       try{
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -25,12 +27,16 @@ class AdminCustomerController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);
+            return redirect('/admin/customer-list-page')->with(['status'=>true,'message'=>'Customer Added Successfully']);
+       }catch(Exception $e){
+            return redirect('/admin/customer-list-page')->with(['status'=>false,'message'=>'something went wrong']);
+       }
 
-        return response()->json(['message' => 'Customer created successfully'], 200);
     }
 
     public function customerUpdate(Request $request){
 
+       try{
         $request->validate([
             'name' => 'required',
             'password' => 'required|min:8',
@@ -41,8 +47,19 @@ class AdminCustomerController extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
+            return redirect('/admin/customer-list-page')->with(['status'=>true,'message'=>'Customer updated Successfully']);
+       }catch(Exception $e){
+            return redirect('/admin/customer-list-page')->with(['status'=>false,'message'=>'something went wrong']);
+       }
+    }
 
-        return response()->json(['message' => 'Customer updated successfully'], 200);
+    public function customerDelete(Request $request){
+        try{
+            User::where('id',$request->id)->delete();
+            return redirect('/admin/customer-list-page')->with(['status'=>true,'message'=>'Customer deleted Successfully']);
+        }catch(Exception $e){
+            return redirect('/admin/customer-list-page')->with(['status'=>false,'message'=>'something went wrong']);
+        }
     }
 
     public function customerListPage(Request $request){

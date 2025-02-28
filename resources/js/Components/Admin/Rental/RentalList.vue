@@ -1,6 +1,9 @@
 <script setup>
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster({ /* options */ });
 
 const page = usePage();
 
@@ -22,6 +25,12 @@ function deleteRental(id) {
     if (confirm("Are you sure you want to delete this rental?")) {
         router.get(`/admin/rental-delete?id=${id}`);
     }
+}
+
+if(page.props.flash.status==true){
+    toaster.success(page.props.flash.message);
+}else if(page.props.flash.status==false){
+    toaster.error(page.props.flash.message);
 }
 </script>
 

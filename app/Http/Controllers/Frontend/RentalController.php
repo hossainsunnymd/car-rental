@@ -41,10 +41,10 @@ class RentalController extends Controller
                'start_date' => $request->start_date,
                'end_date' => $request->end_date
            ]);
-           return response()->json(['message' => 'Car rented successfully'], 200);
+           return redirect()->route('carDetails',['id'=>$request->car_id])->with(['status'=>true,'message'=>'Car Rented Successfully']);
 
         }else{
-            return "Already Booked";
+            return redirect()->route('carDetails',['id'=>$request->car_id])->with(['status'=>false,'message'=>'This car is already book for these dates']);
         }
 
     }

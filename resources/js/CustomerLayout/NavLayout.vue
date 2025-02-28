@@ -1,6 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+
 
 const props = defineProps({
     show: Boolean,
@@ -41,7 +41,7 @@ function toggleShow() {
                 </div>
 
                 <div class="flex flex-col space-y-3 p-2">
-                    <Link href="/profile-page" class="transition hover:text-blue-600">My Profile</Link>
+                    <Link href="/customer/read-profile" class="transition hover:text-blue-600">My Profile</Link>
                 </div>
 
                 <div class="p-2">

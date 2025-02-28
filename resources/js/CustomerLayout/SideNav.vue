@@ -37,7 +37,7 @@ function toggleSidebar() {
     >
         <div class="text-white p-4">
             <h1 class="text-lg font-bold text-gray-100">
-              Hi, {{ page.props.flash.userName }}
+              Hi, {{ page.props.user.name }}
             </h1>
         </div>
         <nav class="flex-1 p-4">

@@ -2,6 +2,9 @@
 import FooterSection from '../../Components/FrontEnd/FooterSection.vue';
 import HeaderSection from '../../Components/FrontEnd/HeaderSection.vue';
 import { usePage,useForm } from '@inertiajs/vue3';
+import { createToaster } from "@meforma/vue-toaster";
+
+const toaster = createToaster({ /* options */ });
 
 const page=usePage();
 const form=useForm({
@@ -12,7 +15,15 @@ const form=useForm({
 
 
 const rentCar=()=>{
-    form.post('/car-rental');
+    form.post('/car-rental',{
+        onSuccess: () => {
+            if(page.props.flash.status==true){
+                toaster.success(page.props.flash.message);
+            }else{
+                toaster.error(page.props.flash.message);
+            }
+        }
+    });
 }
 
 

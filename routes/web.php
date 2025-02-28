@@ -24,18 +24,9 @@ Route::get('/car-list-by-brand/{brand}',[CarController::class,'carListByBrand'])
 Route::get('/car-list-by-price/{price}',[CarController::class,'carListByPrice'])->name('carListByPrice');
 Route::get('/car-details/{id}',[CarController::class,'carDetails'])->name('carDetails');
 
-
-//Car Rental
-
-Route::post('/car-rental',[RentalController::class,'rentCar'])->name('rentCar')->middleware([TokenVerificationMiddleware::class]);
-
-
-Route::get('/home',[PageController::class,'home'])->name('home');
-
 //auth
 Route::post('/user-registration',[UserController::class,'userRegistration'])->name('userRegistration');
 Route::post('/user-login',[UserController::class,'login'])->name('userLogin');
-Route::get('/read-profile',[UserController::class,'readProfile'])->name('readProfile')->middleware([TokenVerificationMiddleware::class]);
 
 //pages
 Route::get('/sign-up-page',[PageController::class,'signUpPage'])->name('signUpPage');
@@ -43,14 +34,16 @@ Route::get('/sign-in-page',[PageController::class,'signInPage'])->name('signInPa
 Route::get('/logout',[PageController::class,'logout'])->name('logout');
 Route::get('/about-page',[PageController::class,'aboutPage'])->name('aboutPage');
 Route::get('/contact-page',[PageController::class,'contactPage'])->name('contactPage');
+Route::get('/home',[PageController::class,'home'])->name('home');
 
-Route::get('/rental-page',[PageController::class,'rentalPage'])->middleware([TokenVerificationMiddleware::class]);
+
 
 //admin
-Route::get('/admin/dashboard',[PageController::class,'adminDashboard'])->name('adminDashboard')->middleware([TokenVerificationMiddleware::class]);
-
-//admin car
 Route::middleware([TokenVerificationMiddleware::class,AdminMiddleware::class])->group(function () {
+    //dashboard
+    Route::get('/admin/dashboard',[PageController::class,'adminDashboard'])->name('adminDashboard');
+    Route::get('/admin/read-profile',[UserController::class,'adminReadProfile'])->name('adminReadProfile');
+    Route::post('/update-profile',[UserController::class,'updateProfile'])->name('updateProfile');
 
     //cars
     Route::get('/admin/car-list',[AdminCarController::class,'carList'])->name('AdmincarList');
@@ -72,17 +65,32 @@ Route::middleware([TokenVerificationMiddleware::class,AdminMiddleware::class])->
     //customers
     Route::get('/admin/customer-list-page',[AdminCustomerController::class,'customerListPage'])->name('customerListPage');
     Route::get('/admin/customer-save-page',[AdminCustomerController::class,'customerSavePage'])->name('customerSavePage');
-    Route::post('/admin/customer-save',[AdminCustomerController::class,'customerSave'])->name('customerSavePage');
-    Route::post('/admin/customer-update',[AdminCustomerController::class,'customerUpdate'])->name('customerSavePage');
+    Route::post('/admin/customer-save',[AdminCustomerController::class,'customerSave'])->name('customerSave');
+    Route::post('/admin/customer-update',[AdminCustomerController::class,'customerUpdate'])->name('customerUpdate');
+    Route::get('/admin/customer-delete',[AdminCustomerController::class,'customerDelete'])->name('customerDelete');
     Route::get('/admin/customer-show-page',[AdminCustomerController::class,'customerShowPage'])->name('customerShowPage');
 
 });
 
 
 
-//customer
-Route::get('/customer/dashboard',[PageController::class,'customerDashboard'])->name('customerDashboard')->middleware([TokenVerificationMiddleware::class]);
-Route::get('/customer/rentals',[RentalController::class,'rentals'])->name('rentals')->middleware([TokenVerificationMiddleware::class]);
-Route::get('/customer/cancel-rental',[RentalController::class,'cancelRental'])->name('cancelRental')->middleware([TokenVerificationMiddleware::class]);
-Route::get('/customer/rental-history',[RentalController::class,'rentalHistory'])->name('rentalHistory')->middleware([TokenVerificationMiddleware::class]);
+
+//Frontend
+Route::middleware([TokenVerificationMiddleware::class])->group(function (){
+
+//customers
+Route::get('/customer/dashboard',[PageController::class,'customerDashboard'])->name('customerDashboard');
+Route::get('/customer/rentals',[RentalController::class,'rentals'])->name('rentals');
+Route::get('/customer/cancel-rental',[RentalController::class,'cancelRental'])->name('cancelRental');
+Route::get('/customer/rental-history',[RentalController::class,'rentalHistory'])->name('rentalHistory');
+Route::get('/customer/read-profile',[UserController::class,'customerReadProfile'])->name('customerReadProfile');
+Route::post('/update-profile',[UserController::class,'updateProfile'])->name('updateProfile');
+
+
+//rentals
+Route::get('/rental-page',[PageController::class,'rentalPage'])->name('rentalPage');
+Route::post('/car-rental',[RentalController::class,'rentCar'])->name('rentCar');
+
+
+});
 
