@@ -1,6 +1,6 @@
 <script setup>
-import HeaderSection from '../Components/FrontEnd/HeaderSection.vue';
-import FooterSection from '../Components/FrontEnd/FooterSection.vue';
+import HeaderSection from '../../Components/FrontEnd/HeaderSection.vue';
+import FooterSection from '../../Components/FrontEnd/FooterSection.vue';
 </script>
 
 <template>

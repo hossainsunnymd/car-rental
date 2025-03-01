@@ -1,18 +1,17 @@
 <script setup>
 import { Link, router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { createToaster } from "@meforma/vue-toaster";
 
-const toaster = createToaster({  });
+const toaster = createToaster({});
 
 const page = usePage();
 
 const customerHeader = [
-    { text: "ID", value: "id" },
+    { text: "SL", value: "id" },
     { text: "Name", value: "name" },
     { text: "Email", value: "email" },
-    { text: "Action", value: "action" }
-
+    { text: "Action", value: "action" },
 ];
 
 const item = ref(page.props.customers);
@@ -21,17 +20,23 @@ function deleteCustomer(id) {
         router.get(`/admin/customer-delete?id=${id}`);
     }
 }
+const customerWithIndex = computed(() => {
+    return item.value.map((customer, index) => ({
+        ...customer,
+        customId: index + 1,
+    }));
+});
 
-if(page.props.flash.status==true){
+if (page.props.flash.status == true) {
     toaster.success(page.props.flash.message);
-}else if(page.props.flash.status==false){
+} else if (page.props.flash.status == false) {
     toaster.error(page.props.flash.message);
 }
 </script>
 
 <template>
     <div class="p-4 mt-10 bg-[#f8f8f8]">
-        <h1 class="text-2xl font-bold ">Customer List</h1>
+        <h1 class="text-2xl font-bold">Customer List</h1>
         <div class="text-end mb-3">
             <Link
                 :href="`/admin/customer-save-page?id=${0}`"
@@ -43,9 +48,12 @@ if(page.props.flash.status==true){
             buttons-pagination
             alternating
             :headers="customerHeader"
-            :items="item"
+            :items="customerWithIndex"
             :rows-per-page="5"
         >
+            <template #item-id="{ customId }">
+                {{ customId }}
+            </template>
 
             <template #item-action="{ id }">
                 <Link
@@ -56,8 +64,9 @@ if(page.props.flash.status==true){
                     Edit
                 </Link>
 
-                <Link href="/admin/customer-show-page"
-                    :data="{id}"
+                <Link
+                    href="/admin/customer-show-page"
+                    :data="{ id }"
                     class="py-1 px-3 bg-green-600 rounded-md text-white hover:bg-green-700 m-1"
                     >Show</Link
                 >
@@ -74,4 +83,3 @@ if(page.props.flash.status==true){
 </template>
 
 <style scoped></style>
-

@@ -12,15 +12,15 @@ class PageController extends Controller
 {
     public function home(Request $request){
         $carList=Car::where('availability','=','Available')->get();
-        return Inertia::render('Home',['carList'=>$carList]);
+        return Inertia::render('FrontEnd/Home',['carList'=>$carList]);
     }
 
     public function signUpPage(Request $request){
-        return Inertia::render('SignUpPage');
+        return Inertia::render('FrontEnd/SignUpPage');
     }
 
     public function signInPage(Request $request){
-        return Inertia::render('SignInPage');
+        return Inertia::render('FrontEnd/SignInPage');
     }
 
     public function adminDashboard(Request $request){
@@ -38,25 +38,36 @@ class PageController extends Controller
     }
 
     public function customerDashboard(Request $request){
-        return Inertia::render('Customer/DashBoardPage');
+        $userId=$request->header('user_id');
+        $totalRental=Rental::where('user_id','=',$userId)->count();
+        $totalOngoingRental=Rental::where('user_id','=',$userId)->where('status','=','Ongoing')->count();
+        $totalCompletedRental=Rental::where('user_id','=',$userId)->where('status','=','Completed')->count();
+        $totalCancelledRental=Rental::where('user_id','=',$userId)->where('status','=','Cancelled')->count();
+        $data=[
+            'totalRental'=>$totalRental,
+            'totalOngoingRental'=>$totalOngoingRental,
+            'totalCompletedRental'=>$totalCompletedRental,
+            'totalCancelledRental'=>$totalCancelledRental
+        ];
+        return Inertia::render('Customer/DashBoardPage',$data);
     }
 
     public function rentalPage(){
         $carList=Car::where('availability','=','Available')->get();
-        return Inertia::render('RentalPage',['carList'=>$carList]);
+        return Inertia::render('FrontEnd/RentalPage',['carList'=>$carList]);
     }
 
     public function aboutPage(){
-        return Inertia::render('AboutPage');
+        return Inertia::render('FrontEnd/AboutPage');
     }
 
     public function contactPage(){
-        return Inertia::render('ContactPage');
+        return Inertia::render('FrontEnd/ContactPage');
     }
 
     public function logout(Request $request){
         $request->session()->flush();
-        return redirect('/home')->cookie('token','',-1);
+        return redirect('FrontEnd/home')->cookie('token','',-1);
     }
 
 

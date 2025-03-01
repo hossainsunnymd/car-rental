@@ -1,12 +1,12 @@
 <script setup>
  import SideNav from '../../CustomerLayout/SideNav.vue'
- import DashBoard from '../../Components/Customer/DashBoard.vue';
+ import CustomerDashBoard from '../../Components/Customer/CustomerDashBoard.vue';
 
 </script>
 
 <template>
     <SideNav>
-        <DashBoard/>
+        <CustomerDashBoard/>
     </SideNav>
 
 </template>

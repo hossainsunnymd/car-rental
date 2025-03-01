@@ -1,14 +1,14 @@
 <script setup>
 import { Link, router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref,computed } from "vue";
 import { createToaster } from "@meforma/vue-toaster";
 
-const toaster = createToaster({ /* options */ });
+const toaster = createToaster({  });
 
 const page = usePage();
 
 const carsHeader = [
-    { text: "ID", value: "id" },
+    { text: "SL", value: "id" },
     { text: "Customer Name", value: "user.name" },
     { text: "Car Name", value: "car.name" },
     { text: "Car Brand", value: "car.brand" },
@@ -19,7 +19,18 @@ const carsHeader = [
     { text: "Action", value: "action" },
 ];
 
-const item = ref(page.props.rentals);
+
+const rentals = ref(page.props.rentals);
+
+
+const rentalsWithIndex =computed(() => {
+    return rentals.value.map((rental, index) => ({
+        ...rental,
+        customId: index + 1,
+    }));
+})
+
+
 
 function deleteRental(id) {
     if (confirm("Are you sure you want to delete this rental?")) {
@@ -27,9 +38,9 @@ function deleteRental(id) {
     }
 }
 
-if(page.props.flash.status==true){
+if (page.props.flash.status === true) {
     toaster.success(page.props.flash.message);
-}else if(page.props.flash.status==false){
+} else if (page.props.flash.status === false) {
     toaster.error(page.props.flash.message);
 }
 </script>
@@ -48,9 +59,12 @@ if(page.props.flash.status==true){
             buttons-pagination
             alternating
             :headers="carsHeader"
-            :items="item"
+            :items="rentalsWithIndex"
             :rows-per-page="5"
         >
+            <template #item-id="{ customId }">
+                {{ customId }}
+            </template>
 
             <template #item-action="{ id }">
                 <Link
@@ -78,4 +92,3 @@ if(page.props.flash.status==true){
 </template>
 
 <style scoped></style>
-

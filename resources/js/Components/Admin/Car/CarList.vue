@@ -1,6 +1,6 @@
 <script setup>
 import { Link, router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref ,computed} from "vue";
 
 import { createToaster } from "@meforma/vue-toaster";
 
@@ -9,7 +9,7 @@ const toaster = createToaster({ /* options */ });
 const page = usePage();
 
 const carsHeader = [
-    { text: "ID", value: "id" },
+    { text: "SL", value: "id" },
     { text: "Name", value: "name" },
     { text: "Brand", value: "brand" },
     { text: "Model", value: "model" },
@@ -27,6 +27,14 @@ function deleteCar(id) {
         router.get(`/admin/car-delete?id=${id}`);
     }
 }
+
+const carListWithIndex =computed(() => {
+    return item.value.map((car, index) => ({
+        ...car,
+        customId: index + 1,
+    }));
+})
+
 
 if(page.props.flash.status==true){
     toaster.success(page.props.flash.message);
@@ -49,9 +57,12 @@ if(page.props.flash.status==true){
             buttons-pagination
             alternating
             :headers="carsHeader"
-            :items="item"
+            :items="carListWithIndex"
             :rows-per-page="5"
         >
+            <template #item-id="{customId}">
+                {{ customId }}
+            </template>
             <template #item-image="{ image }">
                 <img  :src="`/images/${image}`" class="h-[50px]" :alt="image" />
             </template>
