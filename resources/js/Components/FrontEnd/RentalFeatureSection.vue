@@ -22,7 +22,7 @@ const filterCarbyPrice=(e)=>{
 <template>
     <main class="my-8">
         <div class="container mx-auto px-6">
-            <div v-if="page.props.flash.login==true" class="flex justify-between mt-8">
+            <div v-if="page.props.user.login==true" class="flex justify-between mt-8">
                 <div>
                     <select @change="filterCarbyType"  class="border border-gray-500 rounded-md h-[35px] w-[350px] p-2 bg-white">
                         <option value="all" selected>All Car</option>
