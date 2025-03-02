@@ -11,8 +11,7 @@ use Inertia\Inertia;
 class PageController extends Controller
 {
     public function home(Request $request){
-        $carList=Car::where('availability','=','Available')->get();
-        return Inertia::render('FrontEnd/Home',['carList'=>$carList]);
+        return Inertia::render('FrontEnd/Home');
     }
 
     public function signUpPage(Request $request){
@@ -54,7 +53,9 @@ class PageController extends Controller
 
     public function rentalPage(){
         $carList=Car::where('availability','=','Available')->get();
-        return Inertia::render('FrontEnd/RentalPage',['carList'=>$carList]);
+        $typeList=Car::select('car_type')->distinct()->get();
+        $brandList=Car::select('brand')->distinct()->get();
+        return Inertia::render('FrontEnd/RentalPage',['carList'=>$carList,'typeList'=>$typeList,'brandList'=>$brandList]);
     }
 
     public function aboutPage(){
@@ -67,7 +68,7 @@ class PageController extends Controller
 
     public function logout(Request $request){
         $request->session()->flush();
-        return redirect('FrontEnd/home')->cookie('token','',-1);
+        return redirect('/home')->cookie('token','',-1);
     }
 
 

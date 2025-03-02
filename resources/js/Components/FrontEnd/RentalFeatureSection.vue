@@ -26,13 +26,13 @@ const filterCarbyPrice=(e)=>{
                 <div>
                     <select @change="filterCarbyType"  class="border border-gray-500 rounded-md h-[35px] w-[350px] p-2 bg-white">
                         <option value="all" selected>All Car</option>
-                        <option v-for="(car,i) in page.props.carList" :key="i" :value="car.car_type"> {{car.car_type}}</option>
+                        <option v-for="(car,i) in page.props.typeList" :key="i" :value="car.car_type"> {{car.car_type}}</option>
                     </select>
                 </div>
                 <div>
                     <select @change="filterCarbyBrand" class="border border-gray-500 rounded-md h-[35px] w-[350px] p-2 bg-white">
                         <option value=""selected>All Brand</option>
-                        <option v-for="(car,i) in page.props.carList" :key="i" :value="car.brand"> {{car.brand}}</option>
+                        <option v-for="(car,i) in page.props.brandList" :key="i" :value="car.brand"> {{car.brand}}</option>
                     </select>
                 </div>
                 <div>
