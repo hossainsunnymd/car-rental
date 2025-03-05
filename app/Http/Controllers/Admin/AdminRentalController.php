@@ -65,43 +65,51 @@ class AdminRentalController extends Controller
         }
     }
 
-    public function rentalUpdate(Request $request){
-        $id=$request->id;
+    public function rentalUpdate(Request $request) {
+        $id = $request->id;
 
-        try{
-            $startDate=Carbon::parse($request->input('start_date'));
-            $endDate=Carbon::parse($request->input('end_date'));
-            $days=$startDate->diffInDays($endDate);
-            $dailyRentPrice=Car::where('id','=',$request->car_id)->first()->daily_rent_price;
-            $totalCost=$days*$dailyRentPrice;
+        try {
+            // Parse dates using Carbon
+            $startDate = Carbon::parse($request->input('start_date'))->format('Y-m-d');
+            $endDate = Carbon::parse($request->input('end_date'))->format('Y-m-d');
 
+            // Calculate rental cost
+            $days = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate));
+            $dailyRentPrice = Car::where('id', $request->car_id)->value('daily_rent_price');
+            $totalCost = $days * $dailyRentPrice;
 
-            $startDate=date('Y-m-d',strtotime($request->start_date));
-            $endDate=date('Y-m-d',strtotime($request->end_date));
-            $count=Rental::where('car_id','=',$request->car_id)->where('id','!=',$id)
-            ->whereBetween('start_date',[$startDate,$endDate])
-            ->orwhereBetween('end_date',[$startDate,$endDate])->orWhere(function($q)use($startDate,$endDate){
-                $q->where('start_date','=<',$startDate)
-                ->Where('end_date','>=',$endDate);
-            })->count();
-            if($count){
+            // Check if car is already booked in the selected date range
+            $count = Rental::where('car_id', $request->car_id)
+                ->where('id', '!=', $id)
+                ->where(function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('start_date', [$startDate, $endDate])
+                          ->orWhereBetween('end_date', [$startDate, $endDate])
+                          ->orWhere(function ($q) use ($startDate, $endDate) {
+                              $q->where('start_date', '<=', $startDate)
+                                ->where('end_date', '>=', $endDate);
+                          });
+                })
+                ->count();
 
-                return redirect('/admin/rental-list')->with(['status'=>false,'message'=>'Car Already Booked for these dates']);
-
-            }else{
-                Rental::where('id','=',$id)->update([
-                    'car_id' => $request->car_id,
-                    'user_id' => $request->customer_id,
-                    'total_cost' =>$totalCost,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'status' => $request->status
-                ]);
-                return redirect('/admin/rental-list')->with(['status'=>true,'message'=>'Rental Updated Successfully']);
+            // If car is already booked, return an error message
+            if ($count > 0) {
+                return redirect('/admin/rental-list')->with(['status' => false, 'message' => 'Car is already booked for these dates']);
             }
 
-        }catch(Exception $e){
-            return redirect('/admin/rental-list')->with(['status'=>false,'message'=>'something went wrong']);
+            // Update the rental record
+            Rental::where('id', $id)->update([
+                'car_id' => $request->car_id,
+                'user_id' => $request->customer_id,
+                'total_cost' => $totalCost,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'status' => $request->status
+            ]);
+
+            return redirect('/admin/rental-list')->with(['status' => true, 'message' => 'Rental Updated Successfully']);
+
+        } catch (Exception $e) {
+            return redirect('/admin/rental-list')->with(['status' => false, 'message' => 'Something went wrong']);
         }
     }
 

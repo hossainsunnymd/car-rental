@@ -12,7 +12,7 @@ class CarController extends Controller
 
     public function carListByBrand(Request $request){
         $carListbyBrand=Car::where('brand','=',$request->brand)->get();
-
+        // return $carListbyBrand;
         return Inertia::render('FrontEnd/CarByType',['carList'=>$carListbyBrand]);
     }
 
@@ -23,7 +23,7 @@ class CarController extends Controller
     }
 
     public function carListByPrice(Request $request){
-        $carListbyPrice=Car::where('daily_rent_price','=',$request->price)->get();
+        $carListbyPrice=Car::where('daily_rent_price','<=',$request->price)->get();
         return Inertia::render('FrontEnd/CarByType',['carList'=>$carListbyPrice]);
     }
 

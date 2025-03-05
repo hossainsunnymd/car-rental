@@ -22,7 +22,7 @@ class AdminMiddleware
         if($result->role=='admin'){
             return $next($request);
         }else{
-            return redirect('/sign-in-Page');
+            return redirect('/sign-in-page');
         }
 
     }

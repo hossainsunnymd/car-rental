@@ -11,14 +11,17 @@ use Inertia\Inertia;
 class PageController extends Controller
 {
     public function home(Request $request){
-        return Inertia::render('FrontEnd/Home');
+        $carList=Car::where('availability','=','Available')->get();
+        return Inertia::render('FrontEnd/Home',['carList'=>$carList]);
     }
 
     public function signUpPage(Request $request){
+
         return Inertia::render('FrontEnd/SignUpPage');
     }
 
     public function signInPage(Request $request){
+
         return Inertia::render('FrontEnd/SignInPage');
     }
 
